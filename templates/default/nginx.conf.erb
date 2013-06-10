@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_name <%= node[:pypi][:server_name] %>;
+
+    access_log <%= node[:nginx][:log_dir] %>/pypi.access.log;
+    error_log <%= node[:nginx][:log_dir] %>/pypi.error.log warn;
+
+    # pip does not sets the ending / -> avoid redirection
+    rewrite ^([^.]*[^/])$ $1/ last;
+
+    location / {
+        root <%= node[:pypi][:virtualenv] %>/data/web;
+        autoindex on;
+    }
+}
